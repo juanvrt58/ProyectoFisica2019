@@ -1,23 +1,37 @@
 
 from  pylab import *
 import numpy as np 
-from math import sqrt
+from math import *
 #from bokeh.plotting import figure, output_file, show
-
-x = [1, 2, 3, 4, 5]
-y = [5, 4, 3, 2, 1]
 
 def ecuacioncine(v,x, t, a):
     f = x + v * t + 0.5 * a * t**2
     return f
-def FunBala(Title, velocidad, aceleracion, tiempo, peso):
-    Time = []
-    Hight = []
-    for i in range(tiempo):
-        Time.append(i)
-        Hight.append(i) #Llamar a formula con "i"
-    pit.plot(Hight, Time)
-    pit.show()  
+def ecuaciondistancia(v, g):
+     d = ((v ** 2) * sin(2 * g)) / 10
+     return d
+def tiempodistancia(v, g):
+    t = (2 * v * sin(g))/10
+    return t
+def FunBala(angulo,velocidad, aceleracion):
+    velocidad += aceleracion
+    angulo = radians(angulo)
+
+    print("Una bala de masa 'm', velocidad 'v' y aceleracion 'a'. En que velocidad tiene en 't' tiempo ")
+  #  distancia = arange(10)
+   # tiempos = arange(10)
+    #d = velocidad * tiempo + 0.5 * (aceleracion *  tiempo **2)
+    plot((0,  tiempodistancia(velocidad, angulo)), (0, ecuaciondistancia(velocidad, angulo)), color="red", label="Bala")
+    print(ecuaciondistancia(velocidad, angulo))
+    print(tiempodistancia(velocidad, angulo))
+    
+    legend(loc='upper left')
+    grid()
+    title('Representacion del problema. ')
+    xlabel('Tiempo / s  : ' + str(tiempodistancia(velocidad, angulo)))
+    ylabel('Distancia de la bala / m : ' + str(ecuaciondistancia(velocidad, angulo)))
+ 
+    show()    
 
 def FunAutos(velocidad_A, velocidad_B, aceleracion_A, aceleracion_B, distancia_A, distancia_B,):
     tiempo_1, tiempo_2, tiempo_3, tiempo_4 = 0, 0, 0 ,0
@@ -63,7 +77,7 @@ def FunAutos(velocidad_A, velocidad_B, aceleracion_A, aceleracion_B, distancia_A
     legend(loc='upper left')
     grid()
     title('Representacion del problema. ')
-    xlabel('Tiempo / s')
+    xlabel('Tiempo / s : ')
     ylabel('Punto de interseccion : ' + str(punto_interseccion_1))
  
     show()
