@@ -1,98 +1,83 @@
-
-from  pylab import *
-import numpy as np 
-from math import *
-#from bokeh.plotting import figure, output_file, show
-
+#La linea 2 y 3 se importan las funciones utilizadas en el codigo.
+from  pylab import plot, suptitle, xlabel, ylabel, grid, show, arange
+from math import radians, sin, sqrt
+from matplotlib.pyplot import xlabel
+#En las lines 5, 8, 11, 14 Son funciones que contienen las ecuaciones utilizadas. 
 def ecuacioncine(v,x, t, a):
     f = x + v * t + 0.5 * a * t**2
     return f
 def ecuaciondistancia(v, g):
-     d = ((v ** 2) * sin(2 * g)) / 10
+     d = ((v ** 2) * sin(2 * g)) / 9.8
      return d
 def tiempodistancia(v, g):
-    t = (2 * v * sin(g))/10
+    t = (2 * v * sin(g))/9.8
     return t
-def FunBala(angulo,velocidad, aceleracion):
-    velocidad += aceleracion
+def ybala(angulo, v):
+    y = ((v * sin(angulo))**2)/19.6
+    return y
+
+# En la linea 19 se encuentra la funcion que grafica el lanzamiento de proyectil.
+def FunBala(angulo, velocidad):
+    #Se convierte la variable angulo de entero a radianes.
     angulo = radians(angulo)
-
-    print("Una bala de masa 'm', velocidad 'v' y aceleracion 'a'. En que velocidad tiene en 't' tiempo ")
-  #  distancia = arange(10)
-   # tiempos = arange(10)
-    #d = velocidad * tiempo + 0.5 * (aceleracion *  tiempo **2)
-    plot((0,  tiempodistancia(velocidad, angulo)), (0, ecuaciondistancia(velocidad, angulo)), color="red", label="Bala")
-    print(ecuaciondistancia(velocidad, angulo))
-    print(tiempodistancia(velocidad, angulo))
-    
-    legend(loc='upper left')
-    grid()
-    title('Representacion del problema. ')
+    # Grafica la funcion de modo que las coordenadas (x, y) en donde x llama a la funcion de tiempo, e 'y' llama a la ecuaciondistancia. Los parametros son velocidad y angulo
+    plot((0,  tiempodistancia(velocidad, angulo)), (0, ecuaciondistancia(velocidad, angulo)), color="red")
+    #Convierte a una linea de texto una cadena de caracteres.
+    lis = ("Altura MAXIMA : %s \nDistancia MAXIMA: %s \nTiempo: %s") % (str(ybala(angulo, velocidad)), str(ecuaciondistancia(velocidad, angulo)), str(tiempodistancia(velocidad, angulo)))
+    # Muestra en la parte superior el texto creado a base de la cadena de caracteres en el grafico del proyectil
+    suptitle(lis)
+    print("Altura maxima que obtiene el proyectil                 : " +  str(ybala(angulo, velocidad)) + " metros")
+    print("Distancia maxima que obtiene el proyectil              : " + str(ecuaciondistancia(velocidad, angulo)) + " metros")
+    print("Tiempo en que el proyectil llega a la distancia maxima : " + str(tiempodistancia(velocidad, angulo)) + " segundos \n\n") 
     xlabel('Tiempo / s  : ' + str(tiempodistancia(velocidad, angulo)))
-    ylabel('Distancia de la bala / m : ' + str(ecuaciondistancia(velocidad, angulo)))
- 
-    show()    
-
+    ylabel('Distancia / m : ' + str(ecuaciondistancia(velocidad, angulo)))
+    grid() 
+    show()   
 def FunAutos(velocidad_A, velocidad_B, aceleracion_A, aceleracion_B, distancia_A, distancia_B,):
-    tiempo_1, tiempo_2, tiempo_3, tiempo_4 = 0, 0, 0 ,0
+    tiempo_1, tiempo_2= 0, 0
     punto_interseccion_1, punto_interseccion_2 = 0, 0
+    if aceleracion_A != aceleracion_B and velocidad_A != velocidad_B:
+        if aceleracion_A == aceleracion_B:
+            tiempo_1 = distancia_B / (velocidad_A - velocidad_B)
+        elif velocidad_A == velocidad_B:
+            tiempo_1 = (sqrt(distancia_B) / (aceleracion_A - aceleracion_B)) 
+        else:   
+            tiempo_1 = (-(velocidad_A - velocidad_B) + sqrt((velocidad_A - velocidad_B)**2 +(- 4) *0.5*(aceleracion_A - aceleracion_B)*(distancia_A - distancia_B))) / (aceleracion_A - aceleracion_B)
+        if aceleracion_A != aceleracion_B:
+            punto_interseccion_1 = distancia_B + velocidad_B * tiempo_1 + 0.5 * aceleracion_B * (tiempo_1)**2
+        else:
+            punto_interseccion_1 = distancia_B + velocidad_B * tiempo_1 + 0.5 * aceleracion_B * (tiempo_1)**2
+        if aceleracion_A != aceleracion_B:
+            punto_interseccion_1 = distancia_B + velocidad_B * tiempo_1 + 0.5 * aceleracion_B * (tiempo_1)**2
+        else:
+            punto_interseccion_1 = distancia_B + velocidad_B * tiempo_1 + 0.5 * aceleracion_B * (tiempo_1)**2
+        print("El auto A alcanza al auto B a los " + str(tiempo_1) + " segundos " + "y a " + str(punto_interseccion_1) + " metros del punto de partida inicial del auto A")
+    else:
+        print("Nunca hay tiempo de interseccion!")
+        
+    plot(ecuacioncine(velocidad_A, distancia_A, arange(10), aceleracion_A), color="blue", label="Auto 'A'")
+    plot(ecuacioncine(velocidad_B, distancia_B, arange(10), aceleracion_B), color="red", label="Auto 'B'")
 
-    if aceleracion_B >= aceleracion_A:
-        print("El auto A no alcanza al auto B")
+    if aceleracion_A != aceleracion_B and velocidad_A != velocidad_B:
+        if punto_interseccion_1 >= 0:
+            if punto_interseccion_1 > distancia_B:
+                xlabel('No existe punto de interseccion a esta distancia!')
+                ylabel("No existe punto de interseccion a esta distancia!")
+            else:
+                if tiempo_1 >= 0:
+                    xlabel('Tiempo / s : ' + str(tiempo_1))
+                else: 
+                    xlabel('No existe punto de interseccion a esta distancia!')
+                if punto_interseccion_1 >= 0:
+                    ylabel('Distancia de interseccion : ' + str(punto_interseccion_1))
+                else:
+                    ylabel("No existe punto de interseccion a esta distancia!")
+        else:
+            ylabel("En ninguna distancia intersectan los dos autos!")
+            xlabel("en ningun tiempo intersectan los dos autos!")
+    else:
+        ylabel("En ninguna distancia intersectan los dos autos!")
+        xlabel("en ningun tiempo intersectan los dos autos!")
 
-    elif aceleracion_B < aceleracion_A:
-        tiempo_1 = (-(velocidad_A - velocidad_B) + sqrt((velocidad_A - velocidad_B)**2 +(- 4) *0.5*(aceleracion_A - aceleracion_B)*(distancia_A - distancia_B))) / (aceleracion_A - aceleracion_B)
-
-        tiempo_2 = (-(velocidad_A - velocidad_B) - sqrt((velocidad_A - velocidad_B)**2 + (-4) *0.5*(aceleracion_A - aceleracion_B)*(distancia_A - distancia_B))) / (aceleracion_A - aceleracion_B)
-
-
-    if tiempo_1 > 0:
-      
-        punto_interseccion_1 = distancia_A + velocidad_A * tiempo_1 + 0.5 * aceleracion_A * (tiempo_1)**2
-        tiempo_3 = punto_interseccion_1/(velocidad_B + aceleracion_B)
-        distancia2 = distancia_B + velocidad_B * tiempo_3 + 0.5 * aceleracion_B * tiempo_3**2
-        distancia1 = distancia_A + velocidad_B * tiempo_1 + 0.5 * aceleracion_A * tiempo_1 ** 2
-        print('''
-    El auto A alcanza al auto B a los ''' + str(tiempo_1) + " segundos " + "y a " + str(punto_interseccion_1) + " metros del punto de partida inicial del auto A")
-  
-    if tiempo_2 > 0:
-       # tiempo_3 = distancia_B + velocidad_B * tiempo_2 + 0.5 * aceleracion_B * (tiempo_2**2)
-     
-        punto_interseccion_1 = distancia_A + velocidad_A * tiempo_2 + 0.5 * aceleracion_A * (tiempo_2)**2
-        tiempo_3 = punto_interseccion_1/(velocidad_B + aceleracion_B)
-        distancia1 = distancia_A + velocidad_B * tiempo_2 + 0.5 * aceleracion_A * tiempo_2 ** 2
-        distancia2 = distancia_B + velocidad_B * tiempo_3 + 0.5 * aceleracion_B * tiempo_3**2
-        print("El auto A alcanza al auto B a los " + str(tiempo_2) + " segundos " + "y a " + str(punto_interseccion_1) + " metros del punto de partida inicial del auto A")
- 
-
-
-    print("%s  %s   l    %s  %s  " % (tiempo_1, tiempo_2, punto_interseccion_1, punto_interseccion_2))
-    #fig = figure()
-    a = arange(10)
-    b = arange(10)
-    lis2 = [tiempo_3, punto_interseccion_1]
-    plot(ecuacioncine(velocidad_A, distancia_A, a, aceleracion_A), color="blue", label="Auto 'A'")
-    plot(ecuacioncine(velocidad_B, distancia_B, b, aceleracion_B), color="red", label="Auto 'B'")
-   # pit.plot((0, tiempo_3, 0),(punto_interseccion_1, 0, 0), color="red", label="Auto 'B'")
-    legend(loc='upper left')
     grid()
-    title('Representacion del problema. ')
-    xlabel('Tiempo / s : ')
-    ylabel('Punto de interseccion : ' + str(punto_interseccion_1))
- 
     show()
-#Poner recomendacion de gravedad 9,8 y recibir en string
-def FunObjetoCae(Title, peso, gravedad, altura):
-    if type(int(peso)) == type(int):
-        print("peso : correcto")
-    else:
-        print("Ingreso de un valor invalido! Reintente!")
-    if type(int(gravedad)) == type(int):
-        print("gravedad : correcto")
-    else:
-        print("Ingreso de un valor invalido! Reintente!")
-    if type(int(altura)) == type(int):
-        print("altura : correcto")
-    else:
-        print("Ingreso de un valor invalido! Reintente!")
-     
